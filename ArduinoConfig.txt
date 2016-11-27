@@ -1,0 +1,3 @@
+{"type": "task", "activateTask": 0, "id": 0}
+{"type": "task", "activateTask": 0, "id": 1}
+{"type": "task", "activateTask": 1, "id": 0, "fun": "blinkLed", "sampleTime": 500}
