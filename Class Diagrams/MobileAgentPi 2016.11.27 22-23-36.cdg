@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="MobileAgentPi">
+  <ClassDiagramComponents>
+    <Class name="MobileAgentContoller" package="AgentContol" visibility="public" xPosition="537.0" yPosition="256.0">
+      <Fields>
+        <Field name="agentMsgSender" type="AgentMsgSender" visibility="package" isStatic="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="AgentMsgSender" name="agentMsgSender"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="configureArduino" returnType="void" visibility="public"/>
+        <Method name="run" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ArduinoCommunication" package="ArduinoCommunication" visibility="public" isFinal="true" xPosition="37.0" yPosition="385.0">
+      <Fields>
+        <Field name="serialPort" type="SerialPort" visibility="package" isStatic="true"/>
+        <Field name="PORT_NAMES" type="String" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="input" type="BufferedReader" visibility="private"/>
+        <Field name="outputStream" type="OutputStream" visibility="private" isStatic="true"/>
+        <Field name="TIME_OUT" type="int" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="DATA_RATE" type="int" visibility="private"/>
+        <Field name="messageInterpreter" type="ArduinoMessageInterpreter" visibility="package"/>
+        <Field name="agentMsgSender" type="AgentMsgSender" visibility="package" isStatic="true"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="int" name="dataRate"/>
+          <Argument type="AgentMsgSender" name="agentMsgSender"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="int" name="dataRate"/>
+        </Method>
+        <Method name="close" returnType="void" visibility="public" isStatic="true" isSynchronized="true"/>
+        <Method name="serialEvent" returnType="void" visibility="public" isSynchronized="true">
+          <Argument type="SerialPortEvent" name="oEvent"/>
+        </Method>
+        <Method name="reactOnMessage" returnType="void" visibility="private">
+          <Argument type="String" name="inputLine"/>
+        </Method>
+        <Method name="closeArduinoCommunication" returnType="void" visibility="public" isStatic="true"/>
+        <Method name="writeToArduino" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="s"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ArduinoMessage" package="ArduinoCommunication" visibility="public" xPosition="143.0" yPosition="1090.0">
+      <Fields>
+        <Field name="isLog" type="boolean" visibility="package"/>
+        <Field name="logLevel" type="Level" visibility="package"/>
+        <Field name="message" type="String" visibility="package"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="isIsLog" returnType="boolean" visibility="public"/>
+        <Method name="setIsLog" returnType="void" visibility="public">
+          <Argument type="boolean" name="isLog"/>
+        </Method>
+        <Method name="getLogLevel" returnType="Level" visibility="public"/>
+        <Method name="setLogLevel" returnType="void" visibility="public">
+          <Argument type="Level" name="logLevel"/>
+        </Method>
+        <Method name="getMessage" returnType="String" visibility="public"/>
+        <Method name="setMessage" returnType="void" visibility="public">
+          <Argument type="String" name="message"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ArduinoMessageInterpreter" package="ArduinoCommunication" visibility="public" xPosition="79.0" yPosition="842.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="interpreteArduinoMessage" returnType="ArduinoMessage" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteLogMessage" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteLogMessageWithParameters" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteMessage" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="getTypeAsString" returnType="String" visibility="package">
+          <Argument type="int" name="type"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MobileAgentPi" package="mobileagentpi" visibility="public" xPosition="86.0" yPosition="63.0">
+      <Fields>
+        <Field name="agentMsgSender" type="AgentMsgSender" visibility="package"/>
+        <Field name="arduinoCommunicationThread" type="ArduinoCommunication" visibility="package"/>
+        <Field name="agentContoller" type="MobileAgentContoller" visibility="package"/>
+        <Field name="sensorManager" type="SensorManager" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="I2Ccommunicator" package="RPiSensors" visibility="public" xPosition="1453.0" yPosition="63.0">
+      <Fields>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="DEVICE_ADDRESS" type="int" visibility="package" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="communicate" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="I2Csensor" package="RPiSensors" visibility="public" xPosition="1184.0" yPosition="58.0">
+      <Fields>
+        <Field name="DEVICE_ADDRESS" type="int" visibility="package" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="readSensorValue" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="SensorManager" package="RPiSensors" visibility="public" xPosition="826.0" yPosition="29.0">
+      <Fields>
+        <Field name="sensors" type="ArrayList&lt;I2Csensor&gt;" visibility="package"/>
+        <Field name="isRunOnPi" type="boolean" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="run" returnType="void" visibility="public"/>
+        <Method name="checkIfRunningOnPi" returnType="boolean" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="ServerCommunication" package="ServerCommunication" visibility="public" isFinal="true" xPosition="1018.0" yPosition="855.0">
+      <Fields>
+        <Field name="url" type="URL" visibility="package"/>
+        <Field name="connection" type="URLConnection" visibility="package"/>
+        <Field name="out" type="OutputStreamWriter" visibility="package"/>
+        <Field name="servicePath" type="String" visibility="package"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="String" name="path"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="openConnection" returnType="void" visibility="public">
+          <Argument type="String" name="path"/>
+        </Method>
+        <Method name="send" returnType="boolean" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="verifySending" returnType="boolean" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="ToConsoleSender" package="ServerCommunication" visibility="public" xPosition="636.0" yPosition="552.0">
+      <Fields>
+        <Field name="instance" type="ToConsoleSender" visibility="private" isStatic="true"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="protected"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="ToConsoleSender" visibility="public" isStatic="true"/>
+        <Method name="send" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+          <Argument type="MessageType" name="msgType"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ToServerSender" package="ServerCommunication" visibility="public" xPosition="1408.0" yPosition="420.0">
+      <Fields>
+        <Field name="instance" type="ToServerSender" visibility="private" isStatic="true"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="arduinoDataSender" type="ServerCommunication" visibility="package"/>
+        <Field name="rpiDataSender" type="ServerCommunication" visibility="package"/>
+        <Field name="logSender" type="ServerCommunication" visibility="package"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="protected"/>
+      </Constructors>
+      <Methods>
+        <Method name="getInstance" returnType="ToServerSender" visibility="public" isStatic="true"/>
+        <Method name="send" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+          <Argument type="MessageType" name="msgType"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Interface name="AgentMsgSender" package="ServerCommunication" visibility="public" xPosition="1242.0" yPosition="279.0">
+      <Methods>
+        <Method name="send" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+          <Argument type="MessageType" name="msgType"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Enum name="MessageType" package="ServerCommunication" visibility="public" xPosition="1197.0" yPosition="473.0">
+      <Literals>
+        <Literal name="ARDUINO_MSG"/>
+        <Literal name="RPI_MSG"/>
+        <Literal name="LOG_MSG"/>
+      </Literals>
+    </Enum>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="instance" source="ServerCommunication.ToServerSender" target="ServerCommunication.ToServerSender" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ServerCommunication.ToConsoleSender" target="ServerCommunication.MessageType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="sensorManager" source="mobileagentpi.MobileAgentPi" target="RPiSensors.SensorManager" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ServerCommunication.ToServerSender" target="ServerCommunication.MessageType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="agentMsgSender" source="AgentContol.MobileAgentContoller" target="ServerCommunication.AgentMsgSender" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="agentMsgSender" source="mobileagentpi.MobileAgentPi" target="ServerCommunication.AgentMsgSender" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="agentContoller" source="mobileagentpi.MobileAgentPi" target="AgentContol.MobileAgentContoller" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="messageInterpreter" source="ArduinoCommunication.ArduinoCommunication" target="ArduinoCommunication.ArduinoMessageInterpreter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ArduinoCommunication.ArduinoMessageInterpreter" target="ArduinoCommunication.ArduinoMessage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ServerCommunication.ToConsoleSender" target="ServerCommunication.ToConsoleSender" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="ServerCommunication.ToServerSender" target="ServerCommunication.AgentMsgSender"/>
+    <HasRelation name="instance" source="ServerCommunication.ToConsoleSender" target="ServerCommunication.ToConsoleSender" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="arduinoDataSender" source="ServerCommunication.ToServerSender" target="ServerCommunication.ServerCommunication" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="logSender" source="ServerCommunication.ToServerSender" target="ServerCommunication.ServerCommunication" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="ServerCommunication.ToConsoleSender" target="ServerCommunication.AgentMsgSender"/>
+    <HasRelation name="rpiDataSender" source="ServerCommunication.ToServerSender" target="ServerCommunication.ServerCommunication" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="sensors" source="RPiSensors.SensorManager" target="RPiSensors.I2Csensor" type="Aggregation" sourceCardinality="1..1" targetCardinality="0..*" collectionType="ArrayList&lt;I2Csensor&gt;"/>
+    <UseRelation source="ServerCommunication.ToServerSender" target="ServerCommunication.ToServerSender" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="arduinoCommunicationThread" source="mobileagentpi.MobileAgentPi" target="ArduinoCommunication.ArduinoCommunication" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ServerCommunication.AgentMsgSender" target="ServerCommunication.MessageType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="agentMsgSender" source="ArduinoCommunication.ArduinoCommunication" target="ServerCommunication.AgentMsgSender" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
