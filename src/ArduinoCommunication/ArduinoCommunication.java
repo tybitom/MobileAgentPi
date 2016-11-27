@@ -183,12 +183,15 @@ public final class ArduinoCommunication implements SerialPortEventListener {
     }
 
     public static void writeToArduino(String s) {
-        try {
-            // write string to serial port
-            outputStream.write(s.getBytes());
-            outputStream.flush();
-        } catch (IOException e) {
-            agentMsgSender.send("Sending failed!" + e.getLocalizedMessage(), MessageType.LOG_MSG);
+        if (outputStream != null) {
+            try {
+                // write string to serial port
+                outputStream.write(s.getBytes());
+                outputStream.flush();
+
+            } catch (IOException e) {
+                agentMsgSender.send("Sending failed!" + e.getLocalizedMessage(), MessageType.LOG_MSG);
+            }
         }
     }
 }
