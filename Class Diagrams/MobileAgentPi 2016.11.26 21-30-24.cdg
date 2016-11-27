@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="MobileAgentPi">
+  <ClassDiagramComponents>
+    <Class name="ArduinoCommunication" package="ArduinoCommunication" visibility="public" isFinal="true" xPosition="1391.0" yPosition="707.0">
+      <Fields>
+        <Field name="serialPort" type="SerialPort" visibility="package"/>
+        <Field name="PORT_NAMES" type="String" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="input" type="BufferedReader" visibility="private"/>
+        <Field name="outputStream" type="OutputStream" visibility="private" isStatic="true"/>
+        <Field name="TIME_OUT" type="int" visibility="private" isStatic="true" isFinal="true"/>
+        <Field name="DATA_RATE" type="int" visibility="private"/>
+        <Field name="messageInterpreter" type="ArduinoMessageInterpreter" visibility="package"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public">
+          <Argument type="int" name="dataRate"/>
+        </Constructor>
+      </Constructors>
+      <Methods>
+        <Method name="initialize" returnType="void" visibility="public">
+          <Argument type="int" name="dataRate"/>
+        </Method>
+        <Method name="close" returnType="void" visibility="public" isSynchronized="true"/>
+        <Method name="serialEvent" returnType="void" visibility="public" isSynchronized="true">
+          <Argument type="SerialPortEvent" name="oEvent"/>
+        </Method>
+        <Method name="reactOnMessage" returnType="void" visibility="private">
+          <Argument type="String" name="inputLine"/>
+        </Method>
+        <Method name="write" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String" name="s"/>
+        </Method>
+        <Method name="run" returnType="void" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="ArduinoMessage" package="ArduinoCommunication" visibility="public" xPosition="363.0" yPosition="363.0">
+      <Fields>
+        <Field name="isLog" type="boolean" visibility="package"/>
+        <Field name="logType" type="LogType" visibility="package"/>
+        <Field name="message" type="String" visibility="package"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="isIsLog" returnType="boolean" visibility="public"/>
+        <Method name="setIsLog" returnType="void" visibility="public">
+          <Argument type="boolean" name="isLog"/>
+        </Method>
+        <Method name="getLogType" returnType="LogType" visibility="public"/>
+        <Method name="setLogType" returnType="void" visibility="public">
+          <Argument type="LogType" name="logType"/>
+        </Method>
+        <Method name="getMessage" returnType="String" visibility="public"/>
+        <Method name="setMessage" returnType="void" visibility="public">
+          <Argument type="String" name="message"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="ArduinoMessageInterpreter" package="ArduinoCommunication" visibility="public" xPosition="1363.0" yPosition="401.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="interpreteArduinoMessage" returnType="ArduinoMessage" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteLogMessage" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteLogMessageWithParameters" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="interpreteMessage" returnType="String" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="getTypeAsString" returnType="String" visibility="package">
+          <Argument type="int" name="type"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class name="MobileAgentPi" package="mobileagentpi" visibility="public" xPosition="1031.0" yPosition="791.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="main" returnType="void" visibility="public" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="tryServerConnection" returnType="void" visibility="package"/>
+      </Methods>
+    </Class>
+    <Class name="ServerCommunication" package="ServerCommunication" visibility="public" xPosition="781.0" yPosition="734.0">
+      <Fields>
+        <Field name="url" type="URL" visibility="package"/>
+        <Field name="connection" type="URLConnection" visibility="package"/>
+        <Field name="out" type="OutputStreamWriter" visibility="package"/>
+        <Field name="logger" type="Logger" visibility="private" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Constructors>
+        <Constructor visibility="public"/>
+      </Constructors>
+      <Methods>
+        <Method name="openConnection" returnType="void" visibility="public"/>
+        <Method name="sendJSON" returnType="boolean" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+        <Method name="verifySendingJSON" returnType="boolean" visibility="private"/>
+      </Methods>
+    </Class>
+    <Class name="ToConsoleSender" package="ServerCommunication" visibility="public" xPosition="1994.0" yPosition="867.0">
+      <Fields/>
+      <Constructors/>
+      <Methods>
+        <Method name="send" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Interface name="AgentMsgSender" package="ServerCommunication" visibility="public" xPosition="1994.0" yPosition="690.0">
+      <Methods>
+        <Method name="send" returnType="void" visibility="public">
+          <Argument type="String" name="msg"/>
+        </Method>
+      </Methods>
+    </Interface>
+    <Enum name="LogType" package="ArduinoCommunication" visibility="public" xPosition="385.0" yPosition="783.0">
+      <Literals>
+        <Literal name="INFO"/>
+        <Literal name="WARNING"/>
+        <Literal name="SEVERE"/>
+      </Literals>
+    </Enum>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="logType" source="ArduinoCommunication.ArduinoMessage" target="ArduinoCommunication.LogType" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="messageInterpreter" source="ArduinoCommunication.ArduinoCommunication" target="ArduinoCommunication.ArduinoMessageInterpreter" type="Aggregation" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ArduinoCommunication.ArduinoMessage" target="ArduinoCommunication.LogType" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="ArduinoCommunication.ArduinoMessageInterpreter" target="ArduinoCommunication.ArduinoMessage" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <ImplementsRelation name="&lt;&lt;implements&gt;&gt;" source="ServerCommunication.ToConsoleSender" target="ServerCommunication.AgentMsgSender"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
