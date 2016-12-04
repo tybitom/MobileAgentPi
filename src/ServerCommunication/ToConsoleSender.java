@@ -16,7 +16,7 @@ public class ToConsoleSender implements AgentMsgSender {
 
     private static ToConsoleSender instance = null;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ToConsoleSender.class.getName());
 
     protected ToConsoleSender() {
     }
@@ -37,4 +37,9 @@ public class ToConsoleSender implements AgentMsgSender {
         }
     }
 
+    @Override
+    public void send(String msg, String path) {
+        System.out.print(path + ": ");
+        System.out.println(msg);
+    }
 }

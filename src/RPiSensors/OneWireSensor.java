@@ -11,9 +11,9 @@ import java.util.ArrayList;
  *
  * @author Tomek
  */
-public abstract class I2Csensor extends Sensor {
+public abstract class OneWireSensor extends Sensor {
 
-    public I2Csensor(String name, double accuracy, String unit, String type) {
+    public OneWireSensor(String name, double accuracy, String unit, String type) {
         this.name = name;
         this.accuracy = accuracy;
         this.unit = unit;
@@ -23,5 +23,6 @@ public abstract class I2Csensor extends Sensor {
 
     @Override
     public void measure() {
+
     }
 }

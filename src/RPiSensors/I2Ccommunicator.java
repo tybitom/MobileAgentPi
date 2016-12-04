@@ -5,7 +5,6 @@
  */
 package RPiSensors;
 
-import ServerCommunication.ServerCommunication;
 import com.pi4j.jni.I2C;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class I2Ccommunicator {
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(I2Ccommunicator.class.getName());
 
     final static int DEVICE_ADDRESS = 0x04;
 

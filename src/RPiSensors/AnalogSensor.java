@@ -11,14 +11,21 @@ import java.util.ArrayList;
  *
  * @author Tomek
  */
-public abstract class I2Csensor extends Sensor {
+public abstract class AnalogSensor extends Sensor {
 
-    public I2Csensor(String name, double accuracy, String unit, String type) {
+    int pin;
+
+    public AnalogSensor(String name, double accuracy, String unit, String type) {
         this.name = name;
         this.accuracy = accuracy;
         this.unit = unit;
         this.type = type;
         this.measurements = new ArrayList<>();
+    }
+
+    //reads configuration from file where file name equals sensor name
+    public boolean readConfigurationFromFile() {
+        return true;
     }
 
     @Override

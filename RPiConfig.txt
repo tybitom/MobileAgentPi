@@ -1,0 +1,22 @@
+{
+	"Name": "Agent001",
+	"Description": "I am a really nice mobile agent.",
+	"Type": "Mobile agent",
+	"Sensors": [{
+		"Name": "A111",
+		"Accuracy": 0.01,
+		"Unit": "cm",
+		"Type": "positionSensor"
+	},
+	{
+		"Name": "DS1621",
+		"Accuracy": 0.1,
+		"Unit": "stC",
+		"Type": "thermometer"
+	}],
+	"Language": "SL",
+	"Action_protocol": null,
+	"Action_requesttype": 1,
+	"Action_receiver": null,
+	"Action_sender": null
+}

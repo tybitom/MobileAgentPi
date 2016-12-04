@@ -16,16 +16,12 @@ public class ToServerSender implements AgentMsgSender {
 
     private static ToServerSender instance = null;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ToServerSender.class.getName());
 
-    ServerCommunication arduinoDataSender;
-    ServerCommunication rpiDataSender;
-    ServerCommunication logSender;
+    ServerCommunication dataSender;
 
     protected ToServerSender() {
-        arduinoDataSender = new ServerCommunication("MobileAgentsService/api/arduinoMessages");
-        rpiDataSender = new ServerCommunication("MobileAgentsService/api/rpiMessages");
-        logSender = new ServerCommunication("MobileAgentsService/api/logMessages");
+        dataSender = new ServerCommunication();
     }
 
     public static ToServerSender getInstance() {
@@ -39,20 +35,25 @@ public class ToServerSender implements AgentMsgSender {
     public void send(String msg, MessageType msgType) {
         switch (msgType) {
             case ARDUINO_MSG: {
-                arduinoDataSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/arduinoMessages");
                 break;
             }
             case RPI_MSG: {
-                rpiDataSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/rpiMessages");
                 break;
             }
             case LOG_MSG: {
-                logSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/logMessages");
                 break;
             }
             default:
                 logger.log(Level.SEVERE, "Message not send! Unknown message type {0}.", msgType);
         }
+    }
+
+    @Override
+    public void send(String msg, String path) {
+        dataSender.send(msg, path);
     }
 
 }

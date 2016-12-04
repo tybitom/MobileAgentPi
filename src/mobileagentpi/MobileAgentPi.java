@@ -9,29 +9,92 @@ package mobileagentpi;
  *
  * @author Tomek
  */
+import ActivityInformations.AgentInformations;
+import ActivityInformations.AgentConfigurator;
 import AgentContol.MobileAgentContoller;
 import ArduinoCommunication.ArduinoCommunication;
+import Camera.Monitoring;
 import RPiSensors.SensorManager;
 import ServerCommunication.AgentMsgSender;
-import ServerCommunication.ToServerSender;
+import ServerCommunication.ToConsoleSender;
+import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MobileAgentPi {
 
+    boolean runFurther = true;
+
+    AgentConfigurator actitvityInformations;
     AgentMsgSender agentMsgSender;
     ArduinoCommunication arduinoCommunicationThread;
     MobileAgentContoller agentContoller;
     SensorManager sensorManager;
+    Monitoring monitoring;
 
     public MobileAgentPi() {
-        agentMsgSender = ToServerSender.getInstance();// ToConsoleSender.getInstance();
-        arduinoCommunicationThread = new ArduinoCommunication(38400, agentMsgSender);
-        agentContoller = new MobileAgentContoller(agentMsgSender);
-        sensorManager = new SensorManager();
+
     }
 
-    public void run() {
-        agentContoller.run();
-        System.out.println("Exiting program!");
+    public boolean initialize() {
+        agentMsgSender = ToConsoleSender.getInstance(); // ToServerSender.getInstance(); //
+        actitvityInformations = new AgentConfigurator(agentMsgSender);
+        if (!actitvityInformations.configureRPi()) {
+            Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE,
+                    "Error in configuration for RPi.");
+            return false;
+        }
+        reportPresence();
+        arduinoCommunicationThread = new ArduinoCommunication(38400, agentMsgSender);
+        agentContoller = new MobileAgentContoller(agentMsgSender);
+        sensorManager = new SensorManager(agentMsgSender);
+        monitoring = new Monitoring(agentMsgSender);
+        return true;
+    }
+
+    private void reportPresence() {
+        JSONObject presenceJSON = new JSONObject();
+
+        try {
+            presenceJSON.put("actionTime",
+                    new Timestamp(System.currentTimeMillis()));
+            presenceJSON.put("action_protocol",
+                    AgentInformations.getInstance().getAction_protocol());
+            presenceJSON.put("action_requesttype",
+                    AgentInformations.getInstance().getAction_requesttype());
+            presenceJSON.put("action_receiver",
+                    AgentInformations.getInstance().getAction_receiver());
+            presenceJSON.put("action_sender",
+                    AgentInformations.getInstance().getAction_sender());
+
+            agentMsgSender.send(presenceJSON.toString(), "acl_presencerequests");
+        } catch (JSONException ex) {
+            Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void runThreads() {
+        if (initialize()) {
+            // ArduinoCommunication has event listener
+            Thread agentContollerThread = new Thread(agentContoller);
+            Thread sensorManagerThread = new Thread(sensorManager);
+            Thread monitoringThread = new Thread(monitoring);
+
+            agentContollerThread.start();
+            sensorManagerThread.start();
+            monitoringThread.start();
+
+            while (runFurther) {
+                if (!agentContollerThread.isAlive()) {
+                    sensorManager.stopThread();
+                    runFurther = false;
+
+                }
+            }
+            System.out.println("Exiting program!");
+        }
     }
 
     /**
@@ -39,7 +102,7 @@ public class MobileAgentPi {
      */
     public static void main(String[] args) {
         MobileAgentPi mobileAgentPi = new MobileAgentPi();
-        mobileAgentPi.run();
+        mobileAgentPi.runThreads();
     }
 
     /*static void tryServerConnection() {

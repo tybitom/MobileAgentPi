@@ -5,23 +5,32 @@
  */
 package RPiSensors;
 
-import java.util.ArrayList;
+import java.util.List;
+import javafx.util.Pair;
 
 /**
  *
  * @author Tomek
  */
-public abstract class I2Csensor extends Sensor {
+public abstract class Sensor {
 
-    public I2Csensor(String name, double accuracy, String unit, String type) {
+    String name;
+    double accuracy;
+    String unit;
+    String type;
+    List<Pair> measurements;
+
+    /*public Sensor(String name, double accuracy, String unit, String type) {
         this.name = name;
         this.accuracy = accuracy;
         this.unit = unit;
         this.type = type;
-        this.measurements = new ArrayList<>();
+    }*/
+
+    public void measure() {
     }
 
-    @Override
-    public void measure() {
+    public List getMeasurements() {
+        return measurements;
     }
 }

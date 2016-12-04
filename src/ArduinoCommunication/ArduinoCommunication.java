@@ -11,7 +11,6 @@ package ArduinoCommunication;
  */
 import ServerCommunication.AgentMsgSender;
 import ServerCommunication.MessageType;
-import ServerCommunication.ServerCommunication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,10 +61,10 @@ public final class ArduinoCommunication implements SerialPortEventListener {
     ArduinoMessageInterpreter messageInterpreter;
     static AgentMsgSender agentMsgSender;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ArduinoCommunication.class.getName());
 
     public ArduinoCommunication(int dataRate, AgentMsgSender agentMsgSender) {
-        this.agentMsgSender = agentMsgSender;
+        ArduinoCommunication.agentMsgSender = agentMsgSender;
         agentMsgSender.send("Creating Arduino Communication Thread!", MessageType.LOG_MSG);
         messageInterpreter = new ArduinoMessageInterpreter();
         initialize(dataRate);
@@ -116,6 +115,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
+            agentMsgSender.send("Starting Arduino Communication Thread!", MessageType.LOG_MSG);
         } catch (PortInUseException | UnsupportedCommOperationException
                 | IOException | TooManyListenersException e) {
             System.err.println(e.toString());
@@ -178,7 +178,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
     }
 
     public static void closeArduinoCommunication() {
-        agentMsgSender.send("Ending Arduino communication thread", MessageType.LOG_MSG);
+        agentMsgSender.send("Ending Arduino Communication thread", MessageType.LOG_MSG);
         close();
     }
 

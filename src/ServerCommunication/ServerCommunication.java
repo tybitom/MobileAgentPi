@@ -18,12 +18,10 @@ public final class ServerCommunication {
     URL url;
     URLConnection connection;
     OutputStreamWriter out;
-    String servicePath = "";
 
     private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
 
-    public ServerCommunication(String path) {
-        servicePath = path;
+    public ServerCommunication() {
     }
 
     public void openConnection(String path) {
@@ -39,7 +37,7 @@ public final class ServerCommunication {
         }
     }
 
-    public boolean send(String msg) {
+    public boolean send(String msg, String servicePath) {
         boolean result;
         try {
             openConnection(servicePath);

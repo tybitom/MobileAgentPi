@@ -25,12 +25,12 @@ import org.json.JSONObject;
  *
  * @author Tomek
  */
-public class MobileAgentContoller implements Runnable {
+public final class MobileAgentContoller implements Runnable {
 
     static AgentMsgSender agentMsgSender;
-
+    
     public MobileAgentContoller(AgentMsgSender agentMsgSender) {
-        this.agentMsgSender = agentMsgSender;
+        MobileAgentContoller.agentMsgSender = agentMsgSender;
         configureArduino();
     }
 
@@ -78,6 +78,6 @@ public class MobileAgentContoller implements Runnable {
                 writeToArduino(line);
             }
         }
+        agentMsgSender.send("Ending Mobile Agent Controller thread", MessageType.LOG_MSG);
     }
-
 }
