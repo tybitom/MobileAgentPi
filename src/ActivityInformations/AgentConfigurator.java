@@ -53,10 +53,10 @@ public final class AgentConfigurator {
                 
                 registerAgent(configurationJSON.toString());
 
-                ArrayList<String> characteristics = readCharacteristicsConfiguration("Characteristics.txt");
-                for(String c : characteristics) {
-                    AgentInformations.getInstance().setCharacteristic(c);
-                    reportCharacteristic(c);
+                ArrayList<String> features = readFeaturesConfiguration("Features.txt");
+                for(String c : features) {
+                    AgentInformations.getInstance().setFeature(c);
+                    reportFeature(c);
                 }                    
                 result = true;
             } catch (JSONException ex) {
@@ -103,8 +103,8 @@ public final class AgentConfigurator {
         agentMsgSender.send(configuration, "acl_agents");
     }
 
-    private ArrayList<String> readCharacteristicsConfiguration(String fileName) {
-        ArrayList<String> characteristics = new ArrayList<>();
+    private ArrayList<String> readFeaturesConfiguration(String fileName) {
+        ArrayList<String> features = new ArrayList<>();
         try {
             InputStream inputStream = new FileInputStream(fileName);
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -113,19 +113,19 @@ public final class AgentConfigurator {
                 String line;
                 while ((line = br.readLine()) != null) {
                     //System.out.println(line);
-                    characteristics.add(line);
+                    features.add(line);
                 }
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, "Exception during agent characteristics file reading", ex);
+                logger.log(Level.SEVERE, "Exception during agent features file reading", ex);
             }
         } catch (FileNotFoundException ex) {
             logger.log(Level.SEVERE,
-                    "Unable to find agent characteristics file!", ex);
+                    "Unable to find agent features file!", ex);
         }
-        return characteristics;
+        return features;
     }
 
-    private void reportCharacteristic(String featureName) {
+    private void reportFeature(String featureName) {
         JSONObject JSONmessage = new JSONObject();
         try {
             JSONmessage.put("actionTime",

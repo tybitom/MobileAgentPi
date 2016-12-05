@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public class Monitoring implements Runnable {
 
     static AgentMsgSender agentMsgSender;
-    boolean isRunOnPi = true;
+    boolean isRunOnPi;
     boolean runFurther;
 
     Camera camera;
@@ -31,11 +31,9 @@ public class Monitoring implements Runnable {
     public Monitoring(AgentMsgSender agentMsgSender) {
         Monitoring.agentMsgSender = agentMsgSender;
 
-        camera = new Camera();
-
         isRunOnPi = checkIfRunningOnPi();
         if (isRunOnPi) {
-
+            camera = new Camera();
         }
     }
 
@@ -74,7 +72,7 @@ public class Monitoring implements Runnable {
         }
     }
 
-    private void registerCharacteristic(String featureName) {
+    private void registerFeature(String featureName) {
         JSONObject JSONmessage = new JSONObject();
         try {
             JSONmessage.put("actionTime",
@@ -125,6 +123,9 @@ public class Monitoring implements Runnable {
             if (env.containsKey("user") && env.get("user").contains("pi")) {
                 //System.out.println(env.get("user"));
                 result = true;
+            } else {
+                Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE,
+                        "The host is not Raspberry Pi. This thread will not work!");
             }
         }
         return result;

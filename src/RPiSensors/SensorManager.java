@@ -34,7 +34,6 @@ public class SensorManager implements Runnable {
         if (isRunOnPi) {
             sensors = new ArrayList<>();
             for (int i = 0; i < AgentInformations.getInstance().getSensors().length(); i++) {
-                // TO BE ADDED - parsing and creating sensors objects
                 try {
                     JSONObject sensorJSON = (JSONObject) AgentInformations.getInstance().getSensors().get(i);
                     System.out.println(sensorJSON.toString());
@@ -95,6 +94,9 @@ public class SensorManager implements Runnable {
             if (env.containsKey("user") && env.get("user").contains("pi")) {
                 //System.out.println(env.get("user"));
                 result = true;
+            } else {
+                Logger.getLogger(SensorManager.class.getName()).log(Level.SEVERE,
+                        "The host is not Raspberry Pi. This thread will not work!");
             }
         }
         return result;

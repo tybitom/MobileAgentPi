@@ -162,11 +162,11 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             if (message.isLog) {
                 int ll = message.getLogLevel().intValue();
                 if (Level.INFO.intValue() == ll) {
-                    logger.log(Level.INFO, "ARDUINO: " + s);
+                    logger.log(Level.INFO, "ARDUINO: {0}", s);
                 } else if (Level.WARNING.intValue() == ll) {
-                    logger.log(Level.WARNING, "ARDUINO: " + s);
+                    logger.log(Level.WARNING, "ARDUINO: {0}", s);
                 } else if (Level.SEVERE.intValue() == ll) {
-                    logger.log(Level.SEVERE, "ARDUINO: " + s);
+                    logger.log(Level.SEVERE, "ARDUINO: {0}", s);
                 }
             } else {
                 agentMsgSender.send(message.getMessage(), MessageType.ARDUINO_MSG);

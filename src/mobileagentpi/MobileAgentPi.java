@@ -27,7 +27,7 @@ public class MobileAgentPi {
 
     boolean runFurther = true;
 
-    AgentConfigurator actitvityInformations;
+    AgentConfigurator agentConfigurator;
     AgentMsgSender agentMsgSender;
     ArduinoCommunication arduinoCommunicationThread;
     MobileAgentContoller agentContoller;
@@ -40,8 +40,8 @@ public class MobileAgentPi {
 
     public boolean initialize() {
         agentMsgSender = ToConsoleSender.getInstance(); // ToServerSender.getInstance(); //
-        actitvityInformations = new AgentConfigurator(agentMsgSender);
-        if (!actitvityInformations.configureRPi()) {
+        agentConfigurator = new AgentConfigurator(agentMsgSender);
+        if (!agentConfigurator.configureRPi()) {
             Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE,
                     "Error in configuration for RPi.");
             return false;
@@ -89,8 +89,8 @@ public class MobileAgentPi {
             while (runFurther) {
                 if (!agentContollerThread.isAlive()) {
                     sensorManager.stopThread();
+                    monitoring.stopThread();
                     runFurther = false;
-
                 }
             }
             System.out.println("Exiting program!");

@@ -23,14 +23,15 @@ import javax.imageio.ImageIO;
 // https://www.raspberrypi.org/documentation/configuration/camera.md
 // Example use and the library can be found here
 // https://github.com/Hopding/JRPiCam/blob/master/README.md
+// http://webcam-capture.sarxos.pl/
 public class Camera {
-    
+
     RPiCamera piCamera;
-    
+
     public Camera() {
         configureCamera();
     }
-    
+
     private void configureCamera() {
         try {
             //Create a Camera that saves images to the Pi's Pictures directory.
@@ -55,10 +56,10 @@ public class Camera {
             //Sets all Camera options to their default settings, overriding any changes previously made.
             piCamera.setToDefaults();
         } catch (FailedToRunRaspistillException ex) {
-            Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Camera.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public BufferedImage takeAPicture() {
         try {
             File takeStill = piCamera.takeStill("Pic001.jpg");
@@ -66,9 +67,9 @@ public class Camera {
 
             //BufferedImage image = piCamera.takeBufferedStill();
         } catch (IOException ex) {
-            Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Camera.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Camera.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

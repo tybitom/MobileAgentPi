@@ -22,12 +22,12 @@ public class AgentInformations {
     Object action_receiver;
     Object action_sender;
 
-    ArrayList<String> characteristics;
+    ArrayList<String> features;
 
     private static AgentInformations instance = null;
 
     public AgentInformations() {
-        characteristics = new ArrayList<>();
+        features = new ArrayList<>();
     }
 
     public static AgentInformations getInstance() {
@@ -93,22 +93,22 @@ public class AgentInformations {
         this.action_sender = action_sender;
     }
 
-    /*public ArrayList<String> getCharacteristics() {
-        return characteristics;
+    /*public ArrayList<String> getFeatures() {
+        return features;
     }*/
-    public String getCharacteristic(int index) {
-        return characteristics.get(index);
+    public String getFeature(int index) {
+        return features.get(index);
     }
 
-    public boolean hasCharacteristic(String characteristic) {
-        return characteristics.contains(characteristic);
+    public boolean hasFeature(String feature) {
+        return features.contains(feature);
     }
 
-    public void setCharacteristics(ArrayList<String> characteristics) {
-        this.characteristics = characteristics;
+    public void setFeatures(ArrayList<String> features) {
+        this.features = features;
     }
 
-    public void setCharacteristic(String characteristic) {
-        this.characteristics.add(characteristic);
+    public void setFeature(String feature) {
+        this.features.add(feature);
     }
 }
