@@ -18,13 +18,13 @@ import org.json.JSONObject;
  *
  * @author Tomek
  */
-public class InternAgentsCommunicator {
+public class InternalAgentsCommunicator {
 
     AgentMsgSender agentMsgSender;
 
-    static final Logger logger = Logger.getLogger(InternAgentsCommunicator.class.getName());
+    static final Logger logger = Logger.getLogger(InternalAgentsCommunicator.class.getName());
 
-    public InternAgentsCommunicator(AgentMsgSender agentMsgSender) {
+    public InternalAgentsCommunicator(AgentMsgSender agentMsgSender) {
         this.agentMsgSender = agentMsgSender;
     }
 
