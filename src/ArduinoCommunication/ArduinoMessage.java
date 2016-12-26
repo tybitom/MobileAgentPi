@@ -8,7 +8,7 @@ package ArduinoCommunication;
 import java.util.logging.Level;
 
 /**
- *
+ * A message class from Arduino
  * @author Tomek
  */
 public class ArduinoMessage {

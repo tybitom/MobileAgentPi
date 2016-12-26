@@ -13,6 +13,7 @@ import java.util.logging.Level;
  */
 public class ArduinoMessageInterpreter {
 
+    // interpretes a message from Arduino
     public ArduinoMessage interpreteArduinoMessage(String msg) {
         ArduinoMessage intepretedMessage = new ArduinoMessage();
         msg = msg.trim(); // to remove new line character at the end of message
@@ -50,6 +51,8 @@ public class ArduinoMessageInterpreter {
         return intepretedMessage;
     }
 
+    // when a message type is a log message then this function is called
+    // converts short Arduino messages into legible, long messages
     public String interpreteLogMessage(String msg) {
         switch (msg) {
             case "I|MA|sE|OK": {
@@ -136,6 +139,9 @@ public class ArduinoMessageInterpreter {
             case "S|SI|iT|af": { // Adding task failed!
                 return "Adding task failed!";
             }
+            case "S|SI|iT|pni": { // pin not input
+                return "SEVERE! Pin has not been previously set as input!";
+            }
             case "S|SI|iT|fu": { // function unknown
                 return "Function for task unknown!";
             }
@@ -165,6 +171,8 @@ public class ArduinoMessageInterpreter {
         return "";
     }
 
+    // when a message type is a log message with numeric parameters then this function is called
+    // converts short Arduino messages into legible, long messages
     public String interpreteLogMessageWithParameters(String msg) {
         if (msg.contains("W|PC|sPS|ch")) { // PinController::setPinState(uint8_t pinNumber, uint8_t state)
             String s[] = msg.substring("W|PC|sPS|ch".length()).split("|");

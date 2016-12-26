@@ -16,7 +16,7 @@ public class ToConsoleSender implements AgentMsgSender {
 
     private static ToConsoleSender instance = null;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ToConsoleSender.class.getName());
 
     protected ToConsoleSender() {
     }
@@ -28,6 +28,7 @@ public class ToConsoleSender implements AgentMsgSender {
         return instance;
     }
 
+    // prints the message to the program console as a normal message or as a log
     @Override
     public void send(String msg, MessageType msgType) {
         if (msgType == MessageType.LOG_MSG) {
@@ -37,4 +38,11 @@ public class ToConsoleSender implements AgentMsgSender {
         }
     }
 
+    // prints the message to the program console specifying the path
+    // is needed for server REST communication
+    @Override
+    public void send(String msg, String path) {
+        System.out.print(path + ": ");
+        System.out.println(msg);
+    }
 }

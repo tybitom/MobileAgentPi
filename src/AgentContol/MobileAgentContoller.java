@@ -25,15 +25,17 @@ import org.json.JSONObject;
  *
  * @author Tomek
  */
-public class MobileAgentContoller implements Runnable {
+public final class MobileAgentContoller implements Runnable {
 
     static AgentMsgSender agentMsgSender;
 
+    // controls the agent movement, sending steering commands to Arduino
     public MobileAgentContoller(AgentMsgSender agentMsgSender) {
-        this.agentMsgSender = agentMsgSender;
+        MobileAgentContoller.agentMsgSender = agentMsgSender;
         configureArduino();
     }
 
+    // sends the configuration to Arduino basing on data read from file
     public void configureArduino() {
         try {
             InputStream inputStream = new FileInputStream("ArduinoConfig.txt");
@@ -64,6 +66,7 @@ public class MobileAgentContoller implements Runnable {
         }
     }
 
+    // listens for streering commands in the program console
     @Override
     public void run() {
         agentMsgSender.send("Starting MA Controller Thread!", MessageType.LOG_MSG);
@@ -75,9 +78,32 @@ public class MobileAgentContoller implements Runnable {
                 closeArduinoCommunication();
                 break;
             } else {
-                writeToArduino(line);
+                String commandToSend = isCommandCorrect(line);
+                if (!"".equals(commandToSend)) {
+                    Logger.getLogger(MobileAgentContoller.class.getName()).log(
+                            Level.INFO, "Sending to Arduino: {0}", commandToSend);
+                    writeToArduino(commandToSend);
+                }
             }
         }
+        agentMsgSender.send("Ending Mobile Agent Controller thread", MessageType.LOG_MSG);
     }
 
+    // checks if command is less than 100 chars and in JSON format
+    // if string parameter in not in JSON format
+    // returns empty string "", otherwise the command
+    public String isCommandCorrect(String command) {
+        String result = "";
+        // where 100 is the max length of arduino buffer
+        if (command.length() < 100) {
+            try {
+                JSONObject jsonObject = new JSONObject(command);
+                result = jsonObject.toString();
+            } catch (JSONException ex) {
+                Logger.getLogger(MobileAgentContoller.class.getName()).log(Level.SEVERE,
+                        "Provided command for Arduino has not JSON format!");
+            }
+        }
+        return result;
+    }
 }

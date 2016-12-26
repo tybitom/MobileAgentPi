@@ -18,17 +18,17 @@ public final class ServerCommunication {
     URL url;
     URLConnection connection;
     OutputStreamWriter out;
-    String servicePath = "";
+    String serverIP;
 
     private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
 
-    public ServerCommunication(String path) {
-        servicePath = path;
+    public ServerCommunication(String ip) {
+        serverIP = ip;
     }
 
     public void openConnection(String path) {
         try {
-            url = new URL("http://192.168.1.7:8080/" + path); // http://192.168.1.7:8080/
+            url = new URL("http://" + serverIP + ":8080/" + path); // http://192.168.1.7:8080/
             connection = url.openConnection();
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/json");
@@ -39,7 +39,8 @@ public final class ServerCommunication {
         }
     }
 
-    public boolean send(String msg) {
+    // sends a message to a server
+    public boolean send(String msg, String servicePath) {
         boolean result;
         try {
             openConnection(servicePath);
@@ -54,6 +55,7 @@ public final class ServerCommunication {
         return result;
     }
 
+    // verifies if sending was successful or not
     private boolean verifySending() {
         boolean result = true;
         try {

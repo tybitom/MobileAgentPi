@@ -11,7 +11,6 @@ package ArduinoCommunication;
  */
 import ServerCommunication.AgentMsgSender;
 import ServerCommunication.MessageType;
-import ServerCommunication.ServerCommunication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,20 +61,21 @@ public final class ArduinoCommunication implements SerialPortEventListener {
     ArduinoMessageInterpreter messageInterpreter;
     static AgentMsgSender agentMsgSender;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ArduinoCommunication.class.getName());
 
     public ArduinoCommunication(int dataRate, AgentMsgSender agentMsgSender) {
-        this.agentMsgSender = agentMsgSender;
+        ArduinoCommunication.agentMsgSender = agentMsgSender;
         agentMsgSender.send("Creating Arduino Communication Thread!", MessageType.LOG_MSG);
         messageInterpreter = new ArduinoMessageInterpreter();
         initialize(dataRate);
     }
 
+    // initializes communication with Arduino via serial COM port
     public void initialize(int dataRate) {
         // the next line is for Raspberry Pi and 
         // gets us into the while loop and was suggested here was suggested 
         // http://www.raspberrypi.org/phpBB3/viewtopic.php?f=81&t=32186
-        //System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
+        System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0");
 
         DATA_RATE = dataRate;
         CommPortIdentifier portId = null;
@@ -116,6 +116,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
+            agentMsgSender.send("Starting Arduino Communication Thread!", MessageType.LOG_MSG);
         } catch (PortInUseException | UnsupportedCommOperationException
                 | IOException | TooManyListenersException e) {
             System.err.println(e.toString());
@@ -155,6 +156,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
 
+    // interpretes a message from Arduino and logs it to the console or sends to server
     private void reactOnMessage(String inputLine) {
         ArduinoMessage message = messageInterpreter.interpreteArduinoMessage(inputLine);
         String s = message.getMessage();
@@ -162,23 +164,20 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             if (message.isLog) {
                 int ll = message.getLogLevel().intValue();
                 if (Level.INFO.intValue() == ll) {
-                    logger.log(Level.INFO, "ARDUINO: " + s);
+                    logger.log(Level.INFO, "ARDUINO: {0}", s);
                 } else if (Level.WARNING.intValue() == ll) {
-                    logger.log(Level.WARNING, "ARDUINO: " + s);
+                    logger.log(Level.WARNING, "ARDUINO: {0}", s);
                 } else if (Level.SEVERE.intValue() == ll) {
-                    logger.log(Level.SEVERE, "ARDUINO: " + s);
+                    logger.log(Level.SEVERE, "ARDUINO: {0}", s);
                 }
             } else {
                 agentMsgSender.send(message.getMessage(), MessageType.ARDUINO_MSG);
             }
         }
-        /*else {
-                        agentMsgSender.send("Message was not interpreted!");
-                    }*/
     }
 
     public static void closeArduinoCommunication() {
-        agentMsgSender.send("Ending Arduino communication thread", MessageType.LOG_MSG);
+        agentMsgSender.send("Ending Arduino Communication thread", MessageType.LOG_MSG);
         close();
     }
 

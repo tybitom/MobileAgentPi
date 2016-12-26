@@ -16,21 +16,17 @@ public class ToServerSender implements AgentMsgSender {
 
     private static ToServerSender instance = null;
 
-    private final static Logger logger = Logger.getLogger(ServerCommunication.class.getName());
+    private final static Logger logger = Logger.getLogger(ToServerSender.class.getName());
 
-    ServerCommunication arduinoDataSender;
-    ServerCommunication rpiDataSender;
-    ServerCommunication logSender;
+    ServerCommunication dataSender;
 
-    protected ToServerSender() {
-        arduinoDataSender = new ServerCommunication("MobileAgentsService/api/arduinoMessages");
-        rpiDataSender = new ServerCommunication("MobileAgentsService/api/rpiMessages");
-        logSender = new ServerCommunication("MobileAgentsService/api/logMessages");
+    protected ToServerSender(String ip) {
+        dataSender = new ServerCommunication(ip);
     }
 
-    public static ToServerSender getInstance() {
+    public static ToServerSender getInstance(String ip) {
         if (instance == null) {
-            instance = new ToServerSender();
+            instance = new ToServerSender(ip);
         }
         return instance;
     }
@@ -39,20 +35,25 @@ public class ToServerSender implements AgentMsgSender {
     public void send(String msg, MessageType msgType) {
         switch (msgType) {
             case ARDUINO_MSG: {
-                arduinoDataSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/arduinoMessages");
                 break;
             }
             case RPI_MSG: {
-                rpiDataSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/rpiMessages");
                 break;
             }
             case LOG_MSG: {
-                logSender.send(msg);
+                dataSender.send(msg, "MobileAgentsService/api/logMessages");
                 break;
             }
             default:
                 logger.log(Level.SEVERE, "Message not send! Unknown message type {0}.", msgType);
         }
+    }
+
+    @Override
+    public void send(String msg, String path) {
+        dataSender.send(msg, path);
     }
 
 }

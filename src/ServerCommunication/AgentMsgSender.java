@@ -12,5 +12,6 @@ package ServerCommunication;
 public interface AgentMsgSender {
 
     public void send(String msg, MessageType msgType);
+    public void send(String msg, String path);
 
 }
