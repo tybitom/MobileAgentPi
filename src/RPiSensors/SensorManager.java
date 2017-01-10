@@ -5,8 +5,7 @@
  */
 package RPiSensors;
 
-import ActivityInformations.AgentInformations;
-import ServerCommunication.AgentMsgSender;
+import ActivityInformations.AgentInformation;
 import ServerCommunication.MessageType;
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ServerCommunication.AgentMsgHandler;
 
 /**
  * 
@@ -26,17 +26,17 @@ public class SensorManager implements Runnable {
 
     boolean runFurther = true;
 
-    static AgentMsgSender agentMsgSender;
+    static AgentMsgHandler agentMsgHandler;
 
     // initializes all sensores that are attached and specified in a configuration file
-    public SensorManager(AgentMsgSender agentMsgSender) {
-        SensorManager.agentMsgSender = agentMsgSender;
+    public SensorManager(AgentMsgHandler agentMsgHandler) {
+        SensorManager.agentMsgHandler = agentMsgHandler;
         isRunOnPi = true; //checkIfRunningOnPi();
         if (isRunOnPi) {
             sensors = new ArrayList<>();
-            for (int i = 0; i < AgentInformations.getInstance().getSensors().length(); i++) {
+            for (int i = 0; i < AgentInformation.getInstance().getSensors().length(); i++) {
                 try {
-                    JSONObject sensorJSON = (JSONObject) AgentInformations.getInstance().getSensors().get(i);
+                    JSONObject sensorJSON = (JSONObject) AgentInformation.getInstance().getSensors().get(i);
                     System.out.println(sensorJSON.toString());
                     Sensor s;
                     s = createSensorBasingOnName((String) sensorJSON.get("Name"),
@@ -55,7 +55,7 @@ public class SensorManager implements Runnable {
 
     @Override
     public void run() {
-        agentMsgSender.send("Starting Sensor Manager Thread!", MessageType.LOG_MSG);
+        agentMsgHandler.send("Starting Sensor Manager Thread!", MessageType.LOG_MSG);
         if (isRunOnPi) {
             while (runFurther) {
                 for (SensorMeasurementTask sensor : sensors) {
@@ -63,7 +63,7 @@ public class SensorManager implements Runnable {
                 }
             }
         }
-        agentMsgSender.send("Ending Sensor Manager thread", MessageType.LOG_MSG);
+        agentMsgHandler.send("Ending Sensor Manager thread", MessageType.LOG_MSG);
     }
 
     // creates sensor instance basing on name from a configuration file

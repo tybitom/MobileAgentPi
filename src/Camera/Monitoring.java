@@ -5,8 +5,7 @@
  */
 package Camera;
 
-import ActivityInformations.AgentInformations;
-import ServerCommunication.AgentMsgSender;
+import ActivityInformations.AgentInformation;
 import ServerCommunication.MessageType;
 import com.hopding.jrpicam.exceptions.FailedToRunRaspistillException;
 import java.awt.image.BufferedImage;
@@ -16,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ServerCommunication.AgentMsgHandler;
 
 /**
  *
@@ -23,14 +23,14 @@ import org.json.JSONObject;
  */
 public class Monitoring implements Runnable {
 
-    static AgentMsgSender agentMsgSender;
+    static AgentMsgHandler agentMsgHandler;
     boolean isRunOnPi;
     boolean runFurther;
 
     Camera camera;
 
-    public Monitoring(AgentMsgSender agentMsgSender) throws FailedToRunRaspistillException {
-        Monitoring.agentMsgSender = agentMsgSender;
+    public Monitoring(AgentMsgHandler agentMsgHandler) throws FailedToRunRaspistillException {
+        Monitoring.agentMsgHandler = agentMsgHandler;
 
         isRunOnPi = checkIfRunningOnPi();
         if (isRunOnPi) {
@@ -46,7 +46,7 @@ public class Monitoring implements Runnable {
             JSONmessage.put("objectName", objectName);
             JSONmessage.put("objectDescription", objectDescription);
 
-            agentMsgSender.send(JSONmessage.toString(), "acl_registeredobjects");
+            agentMsgHandler.send(JSONmessage.toString(), "acl_registeredobjects");
         } catch (JSONException ex) {
             Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -61,13 +61,13 @@ public class Monitoring implements Runnable {
             JSONmessage.put("assessmentValue", assessmentValue);
             JSONmessage.put("object", object);
             JSONmessage.put("language",
-                    AgentInformations.getInstance().getLanguage());
+                    AgentInformation.getInstance().getLanguage());
             JSONmessage.put("action_protocol",
-                    AgentInformations.getInstance().getAction_protocol());
+                    AgentInformation.getInstance().getAction_protocol());
             JSONmessage.put("action_receiver",
-                    AgentInformations.getInstance().getAction_receiver());
+                    AgentInformation.getInstance().getAction_receiver());
 
-            agentMsgSender.send(JSONmessage.toString(), "acl_assessments");
+            agentMsgHandler.send(JSONmessage.toString(), "acl_assessments");
         } catch (JSONException ex) {
             Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -80,18 +80,18 @@ public class Monitoring implements Runnable {
                     new Timestamp(System.currentTimeMillis()));
             JSONmessage.put("featureName", featureName);
             JSONmessage.put("language",
-                    AgentInformations.getInstance().getLanguage());
+                    AgentInformation.getInstance().getLanguage());
 
             JSONmessage.put("action_protocol",
-                    AgentInformations.getInstance().getAction_protocol());
+                    AgentInformation.getInstance().getAction_protocol());
             JSONmessage.put("action_requesttype",
-                    AgentInformations.getInstance().getAction_requesttype());
+                    AgentInformation.getInstance().getAction_requesttype());
             JSONmessage.put("action_receiver",
-                    AgentInformations.getInstance().getAction_receiver());
+                    AgentInformation.getInstance().getAction_receiver());
             JSONmessage.put("action_sender",
-                    AgentInformations.getInstance().getAction_sender());
+                    AgentInformation.getInstance().getAction_sender());
 
-            agentMsgSender.send(JSONmessage.toString(), "acl_features");
+            agentMsgHandler.send(JSONmessage.toString(), "acl_features");
         } catch (JSONException ex) {
             Logger.getLogger(Monitoring.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,16 +100,16 @@ public class Monitoring implements Runnable {
     // captures a picture on every call ////////////////////////////////////////////////////Time wrapper should be added!
     @Override
     public void run() {
-        agentMsgSender.send("Starting Monitoring Thread!", MessageType.LOG_MSG);
+        agentMsgHandler.send("Starting Monitoring Thread!", MessageType.LOG_MSG);
         if (isRunOnPi) {
             while (runFurther) {
                 BufferedImage takeAPicture = camera.takeAPicture();
                 if (takeAPicture != null) {
-                    agentMsgSender.send(takeAPicture.toString(), "acl_graphicalreadouts");
+                    agentMsgHandler.send(takeAPicture.toString(), "acl_graphicalreadouts");
                 }
             }
         }
-        agentMsgSender.send("Ending Monitoring thread", MessageType.LOG_MSG);
+        agentMsgHandler.send("Ending Monitoring thread", MessageType.LOG_MSG);
     }
 
     // sets the flag runFurther to exit from while loop in the function run

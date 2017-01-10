@@ -5,8 +5,8 @@
  */
 package RPiSensors;
 
-import ActivityInformations.AgentInformations;
-import static RPiSensors.SensorManager.agentMsgSender;
+import ActivityInformations.AgentInformation;
+import static RPiSensors.SensorManager.agentMsgHandler;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
@@ -65,17 +65,17 @@ public class SensorMeasurementTask extends Sensor {
                     JSONmessage.put((String) measurement.getKey(), measurement.getValue());
                 }
                 JSONmessage.put("language",
-                        AgentInformations.getInstance().getLanguage());
+                        AgentInformation.getInstance().getLanguage());
                 JSONmessage.put("action_protocol",
-                        AgentInformations.getInstance().getAction_protocol());
+                        AgentInformation.getInstance().getAction_protocol());
                 JSONmessage.put("action_requesttype",
-                        AgentInformations.getInstance().getAction_requesttype());
+                        AgentInformation.getInstance().getAction_requesttype());
                 JSONmessage.put("action_receiver",
-                        AgentInformations.getInstance().getAction_receiver());
+                        AgentInformation.getInstance().getAction_receiver());
                 JSONmessage.put("action_sender",
-                        AgentInformations.getInstance().getAction_sender());
+                        AgentInformation.getInstance().getAction_sender());
 
-                agentMsgSender.send(JSONmessage.toString(), "acl_readouts");
+                agentMsgHandler.send(JSONmessage.toString(), "acl_readouts");
 
             } catch (JSONException ex) {
                 Logger.getLogger(SensorMeasurementTask.class

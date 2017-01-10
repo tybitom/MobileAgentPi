@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Tomek
  */
-public class ToServerSender implements AgentMsgSender {
+public class ToServerSender implements AgentMsgHandler {
 
     private static ToServerSender instance = null;
 

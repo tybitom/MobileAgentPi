@@ -9,7 +9,7 @@ package ServerCommunication;
  *
  * @author Tomek
  */
-public interface AgentMsgSender {
+public interface AgentMsgHandler {
 
     public void send(String msg, MessageType msgType);
     public void send(String msg, String path);

@@ -7,7 +7,6 @@ package AgentContol;
 
 import static ArduinoCommunication.ArduinoCommunication.closeArduinoCommunication;
 import static ArduinoCommunication.ArduinoCommunication.writeToArduino;
-import ServerCommunication.AgentMsgSender;
 import ServerCommunication.MessageType;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -20,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ServerCommunication.AgentMsgHandler;
 
 /**
  *
@@ -27,11 +27,11 @@ import org.json.JSONObject;
  */
 public final class MobileAgentContoller implements Runnable {
 
-    static AgentMsgSender agentMsgSender;
+    static AgentMsgHandler agentMsgHandler;
 
     // controls the agent movement, sending steering commands to Arduino
-    public MobileAgentContoller(AgentMsgSender agentMsgSender) {
-        MobileAgentContoller.agentMsgSender = agentMsgSender;
+    public MobileAgentContoller(AgentMsgHandler agentMsgHandler) {
+        MobileAgentContoller.agentMsgHandler = agentMsgHandler;
         configureArduino();
     }
 
@@ -69,11 +69,11 @@ public final class MobileAgentContoller implements Runnable {
     // listens for streering commands in the program console
     @Override
     public void run() {
-        agentMsgSender.send("Starting MA Controller Thread!", MessageType.LOG_MSG);
+        agentMsgHandler.send("Starting MA Controller Thread!", MessageType.LOG_MSG);
         final Scanner in = new Scanner(System.in);
         while (in.hasNext()) {
             final String line = in.nextLine();
-            agentMsgSender.send("Input line: " + line, MessageType.LOG_MSG);
+            agentMsgHandler.send("Input line: " + line, MessageType.LOG_MSG);
             if ("end".equalsIgnoreCase(line)) {
                 closeArduinoCommunication();
                 break;
@@ -86,7 +86,7 @@ public final class MobileAgentContoller implements Runnable {
                 }
             }
         }
-        agentMsgSender.send("Ending Mobile Agent Controller thread", MessageType.LOG_MSG);
+        agentMsgHandler.send("Ending Mobile Agent Controller thread", MessageType.LOG_MSG);
     }
 
     // checks if command is less than 100 chars and in JSON format

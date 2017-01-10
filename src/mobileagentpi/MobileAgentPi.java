@@ -9,14 +9,13 @@ package mobileagentpi;
  *
  * @author Tomek
  */
-import ActivityInformations.AgentInformations;
+import ActivityInformations.AgentInformation;
 import ActivityInformations.AgentConfigurator;
 import AgentContol.MobileAgentContoller;
 import ArduinoCommunication.ArduinoCommunication;
 import Camera.Camera;
 import Camera.Monitoring;
 import RPiSensors.SensorManager;
-import ServerCommunication.AgentMsgSender;
 import ServerCommunication.ToConsoleSender;
 import ServerCommunication.ToServerSender;
 import com.hopding.jrpicam.exceptions.FailedToRunRaspistillException;
@@ -31,13 +30,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ServerCommunication.AgentMsgHandler;
 
 public class MobileAgentPi {
 
     boolean runFurther = true;
 
     AgentConfigurator agentConfigurator;
-    AgentMsgSender agentMsgSender;
+    AgentMsgHandler agentMsgHandler;
     ArduinoCommunication arduinoCommunicationThread;
     MobileAgentContoller agentContoller;
     SensorManager sensorManager;
@@ -52,18 +52,18 @@ public class MobileAgentPi {
     // communication with Arduino and others
     public boolean initialize() {
         initializeSender();
-        agentConfigurator = new AgentConfigurator(agentMsgSender);
+        agentConfigurator = new AgentConfigurator(agentMsgHandler);
         if (!agentConfigurator.configureRPi()) {
             Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE,
                     "Error in configuration for RPi.");
             return false;
         }
         reportPresence();
-        arduinoCommunicationThread = new ArduinoCommunication(38400, agentMsgSender);
-        agentContoller = new MobileAgentContoller(agentMsgSender);
-        sensorManager = new SensorManager(agentMsgSender);
+        arduinoCommunicationThread = new ArduinoCommunication(38400, agentMsgHandler);
+        agentContoller = new MobileAgentContoller(agentMsgHandler);
+        sensorManager = new SensorManager(agentMsgHandler);
         try {
-            monitoring = new Monitoring(agentMsgSender);
+            monitoring = new Monitoring(agentMsgHandler);
         } catch (FailedToRunRaspistillException ex) {
             Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, "Trying to initialize camera failed!", ex);
             monitoring = null;
@@ -84,11 +84,11 @@ public class MobileAgentPi {
                     // ip of the server
                     Logger.getLogger(MobileAgentPi.class.getName()).log(Level.INFO,
                             "Sender set to ServerSender: {0}", configurationString);
-                    agentMsgSender = ToServerSender.getInstance(configurationString);
+                    agentMsgHandler = ToServerSender.getInstance(configurationString);
                 } else {
                     Logger.getLogger(MobileAgentPi.class.getName()).log(Level.INFO,
                             "Sender set to ConsoleSender");
-                    agentMsgSender = ToConsoleSender.getInstance();
+                    agentMsgHandler = ToConsoleSender.getInstance();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,15 +105,15 @@ public class MobileAgentPi {
             presenceJSON.put("actionTime",
                     new Timestamp(System.currentTimeMillis()));
             presenceJSON.put("action_protocol",
-                    AgentInformations.getInstance().getAction_protocol());
+                    AgentInformation.getInstance().getAction_protocol());
             presenceJSON.put("action_requesttype",
-                    AgentInformations.getInstance().getAction_requesttype());
+                    AgentInformation.getInstance().getAction_requesttype());
             presenceJSON.put("action_receiver",
-                    AgentInformations.getInstance().getAction_receiver());
+                    AgentInformation.getInstance().getAction_receiver());
             presenceJSON.put("action_sender",
-                    AgentInformations.getInstance().getAction_sender());
+                    AgentInformation.getInstance().getAction_sender());
 
-            agentMsgSender.send(presenceJSON.toString(), "acl_presencerequests");
+            agentMsgHandler.send(presenceJSON.toString(), "acl_presencerequests");
         } catch (JSONException ex) {
             Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, null, ex);
         }

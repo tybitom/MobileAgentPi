@@ -5,7 +5,6 @@
  */
 package ActivityInformations;
 
-import ServerCommunication.AgentMsgSender;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +18,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ServerCommunication.AgentMsgHandler;
 
 /**
  *
@@ -26,13 +26,13 @@ import org.json.JSONObject;
  */
 public final class AgentConfigurator {
 
-    AgentMsgSender agentMsgSender;
+    AgentMsgHandler agentMsgHandler;
 
     static final Logger logger = Logger.getLogger(AgentConfigurator.class.getName());
 
     // reads an agent configuration from a file and sends it to the server
-    public AgentConfigurator(AgentMsgSender agentMsgSender) {
-        this.agentMsgSender = agentMsgSender;
+    public AgentConfigurator(AgentMsgHandler agentMsgHandler) {
+        this.agentMsgHandler = agentMsgHandler;
     }
 
     // reads the information for registration in the Mobile Agent system
@@ -42,21 +42,21 @@ public final class AgentConfigurator {
         JSONObject configurationJSON = readConfiguration("RPiConfig.txt");
         if (configurationJSON != null) {
             try {
-                AgentInformations.getInstance().setName((String) configurationJSON.get("Name"));
-                AgentInformations.getInstance().setLanguage((String) configurationJSON.get("Language"));
+                AgentInformation.getInstance().setName((String) configurationJSON.get("Name"));
+                AgentInformation.getInstance().setLanguage((String) configurationJSON.get("Language"));
 
-                AgentInformations.getInstance().setAction_protocol(configurationJSON.get("Action_protocol"));
-                AgentInformations.getInstance().setAction_requesttype((int) configurationJSON.get("Action_requesttype"));
-                AgentInformations.getInstance().setAction_receiver(configurationJSON.get("Action_receiver"));
-                AgentInformations.getInstance().setAction_sender(configurationJSON.get("Action_sender"));
+                AgentInformation.getInstance().setAction_protocol(configurationJSON.get("Action_protocol"));
+                AgentInformation.getInstance().setAction_requesttype((int) configurationJSON.get("Action_requesttype"));
+                AgentInformation.getInstance().setAction_receiver(configurationJSON.get("Action_receiver"));
+                AgentInformation.getInstance().setAction_sender(configurationJSON.get("Action_sender"));
 
-                AgentInformations.getInstance().setSensors((JSONArray) (configurationJSON.get("Sensors")));
+                AgentInformation.getInstance().setSensors((JSONArray) (configurationJSON.get("Sensors")));
                 
                 registerAgent(configurationJSON.toString());
 
                 ArrayList<String> features = readFeaturesConfiguration("Features.txt");
                 for(String c : features) {
-                    AgentInformations.getInstance().setFeature(c);
+                    AgentInformation.getInstance().setFeature(c);
                     reportFeature(c);
                 }                    
                 result = true;
@@ -103,7 +103,7 @@ public final class AgentConfigurator {
 
     // sends a registration message
     private void registerAgent(String configuration) {
-        agentMsgSender.send(configuration, "acl_agents");
+        agentMsgHandler.send(configuration, "acl_agents");
     }
 
     // reads agent configuration regarding features from file
@@ -137,14 +137,14 @@ public final class AgentConfigurator {
                     new Timestamp(System.currentTimeMillis()));
             JSONmessage.put("featureName", featureName);
             JSONmessage.put("language",
-                    AgentInformations.getInstance().getLanguage());
+                    AgentInformation.getInstance().getLanguage());
             JSONmessage.put("action_protocol",
-                    AgentInformations.getInstance().getAction_protocol());
+                    AgentInformation.getInstance().getAction_protocol());
             JSONmessage.put("action_receiver",
-                    AgentInformations.getInstance().getAction_receiver());
+                    AgentInformation.getInstance().getAction_receiver());
         } catch (JSONException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
-        agentMsgSender.send(JSONmessage.toString(), "acl_features");
+        agentMsgHandler.send(JSONmessage.toString(), "acl_features");
     }
 }

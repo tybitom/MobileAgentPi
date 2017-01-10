@@ -9,7 +9,6 @@ package ArduinoCommunication;
  *
  * @author Tomek
  */
-import ServerCommunication.AgentMsgSender;
 import ServerCommunication.MessageType;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +27,7 @@ import gnu.io.UnsupportedCommOperationException;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ServerCommunication.AgentMsgHandler;
 
 public final class ArduinoCommunication implements SerialPortEventListener {
 
@@ -59,13 +59,13 @@ public final class ArduinoCommunication implements SerialPortEventListener {
     private int DATA_RATE = 38400;
 
     ArduinoMessageInterpreter messageInterpreter;
-    static AgentMsgSender agentMsgSender;
+    static AgentMsgHandler agentMsgHandler;
 
     private final static Logger logger = Logger.getLogger(ArduinoCommunication.class.getName());
 
-    public ArduinoCommunication(int dataRate, AgentMsgSender agentMsgSender) {
-        ArduinoCommunication.agentMsgSender = agentMsgSender;
-        agentMsgSender.send("Creating Arduino Communication Thread!", MessageType.LOG_MSG);
+    public ArduinoCommunication(int dataRate, AgentMsgHandler agentMsgHandler) {
+        ArduinoCommunication.agentMsgHandler = agentMsgHandler;
+        agentMsgHandler.send("Creating Arduino Communication Thread!", MessageType.LOG_MSG);
         messageInterpreter = new ArduinoMessageInterpreter();
         initialize(dataRate);
     }
@@ -92,10 +92,10 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             }
         }
         if (portId == null) {
-            agentMsgSender.send("Could not find COM port.", MessageType.LOG_MSG);
+            agentMsgHandler.send("Could not find COM port.", MessageType.LOG_MSG);
             return;
         } else {
-            agentMsgSender.send("Connecting to Arduino COM port " + portId.getName(), MessageType.LOG_MSG);
+            agentMsgHandler.send("Connecting to Arduino COM port " + portId.getName(), MessageType.LOG_MSG);
         }
 
         try {
@@ -116,7 +116,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
             // add event listeners
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
-            agentMsgSender.send("Starting Arduino Communication Thread!", MessageType.LOG_MSG);
+            agentMsgHandler.send("Starting Arduino Communication Thread!", MessageType.LOG_MSG);
         } catch (PortInUseException | UnsupportedCommOperationException
                 | IOException | TooManyListenersException e) {
             System.err.println(e.toString());
@@ -141,11 +141,11 @@ public final class ArduinoCommunication implements SerialPortEventListener {
      */
     @Override
     public synchronized void serialEvent(SerialPortEvent oEvent) {
-        //agentMsgSender.send("serialEvent!");
+        //agentMsgHandler.send("serialEvent!");
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine = input.readLine();
-                // agentMsgSender.send(inputLine);
+                // agentMsgHandler.send(inputLine);
                 if (!"".equals(inputLine)) {
                     reactOnMessage(inputLine);
                 }
@@ -171,13 +171,13 @@ public final class ArduinoCommunication implements SerialPortEventListener {
                     logger.log(Level.SEVERE, "ARDUINO: {0}", s);
                 }
             } else {
-                agentMsgSender.send(message.getMessage(), MessageType.ARDUINO_MSG);
+                agentMsgHandler.send(message.getMessage(), MessageType.ARDUINO_MSG);
             }
         }
     }
 
     public static void closeArduinoCommunication() {
-        agentMsgSender.send("Ending Arduino Communication thread", MessageType.LOG_MSG);
+        agentMsgHandler.send("Ending Arduino Communication thread", MessageType.LOG_MSG);
         close();
     }
 
@@ -189,7 +189,7 @@ public final class ArduinoCommunication implements SerialPortEventListener {
                 outputStream.flush();
 
             } catch (IOException e) {
-                agentMsgSender.send("Sending failed!" + e.getLocalizedMessage(), MessageType.LOG_MSG);
+                agentMsgHandler.send("Sending failed!" + e.getLocalizedMessage(), MessageType.LOG_MSG);
             }
         }
     }

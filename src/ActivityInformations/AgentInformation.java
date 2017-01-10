@@ -12,7 +12,7 @@ import org.json.JSONArray;
  *
  * @author Tomek
  */
-public class AgentInformations {
+public class AgentInformation {
 
     String name;
     JSONArray sensors;
@@ -24,17 +24,17 @@ public class AgentInformations {
 
     ArrayList<String> features;
 
-    private static AgentInformations instance = null;
+    private static AgentInformation instance = null;
 
     // serves for agent information container
     // filled with the information from configuration files
-    public AgentInformations() {
+    public AgentInformation() {
         features = new ArrayList<>();
     }
 
-    public static AgentInformations getInstance() {
+    public static AgentInformation getInstance() {
         if (instance == null) {
-            instance = new AgentInformations();
+            instance = new AgentInformation();
         }
         return instance;
     }
