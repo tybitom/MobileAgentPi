@@ -75,6 +75,7 @@ public final class MobileAgentContoller implements Runnable {
             final String line = in.nextLine();
             agentMsgHandler.send("Input line: " + line, MessageType.LOG_MSG);
             if ("end".equalsIgnoreCase(line)) {
+                System.out.println("End command received!");
                 closeArduinoCommunication();
                 break;
             } else {
@@ -97,8 +98,12 @@ public final class MobileAgentContoller implements Runnable {
         // where 100 is the max length of arduino buffer
         if (command.length() < 100) {
             try {
+                // if the command does not have json format the line below will
+                // throw an exception
                 JSONObject jsonObject = new JSONObject(command);
-                result = jsonObject.toString();
+                // jsonObject.toString(); - cannot be applied -> it's changing json order
+                // json order needs to be unchanged to be properly interpreted by Arduino
+                result = command;
             } catch (JSONException ex) {
                 Logger.getLogger(MobileAgentContoller.class.getName()).log(Level.SEVERE,
                         "Provided command for Arduino has not JSON format!");

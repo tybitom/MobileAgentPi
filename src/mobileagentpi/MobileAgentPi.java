@@ -136,14 +136,17 @@ public class MobileAgentPi {
             }
 
             /////////////////experimental///////////////////
-            Camera camera;
+            /*Camera camera;
             try {
                 camera = new Camera();
                 camera.takeAPicture();
             } catch (FailedToRunRaspistillException ex) {
                 Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, 
                         "experimental - starting camera failed", ex);
-            }
+            } catch (Exception ex) {
+                Logger.getLogger(MobileAgentPi.class.getName()).log(Level.SEVERE, 
+                        "experimental - starting camera failed", ex);
+            }*/
             ////////////////////////////////////////////////
 
             while (runFurther) {

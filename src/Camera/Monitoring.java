@@ -114,6 +114,7 @@ public class Monitoring implements Runnable {
 
     // sets the flag runFurther to exit from while loop in the function run
     public void stopThread() {
+        System.out.println("Closing Monitoring thread!");
         this.runFurther = false;
     }
 
